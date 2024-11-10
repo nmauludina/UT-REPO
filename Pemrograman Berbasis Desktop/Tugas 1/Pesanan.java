@@ -21,6 +21,7 @@ public class Pesanan {
         if (!menuAda) { // jika menu tidak tersedia, ulangi pemesanan
             System.out.println("Menu tidak tersedia atau format salah. Mohon masukkan pesanan dengan menu yang tersedia dan format yang benar.");
             terimaPesanan(index, pesanan, jumlahPesanan, daftarMenu);
+            return;
         }
 
         terimaPesanan(index + 1, pesanan, jumlahPesanan, daftarMenu);
