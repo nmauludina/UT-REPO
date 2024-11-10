@@ -56,7 +56,7 @@ public class Main {
     static double totalBiayaPesanan = 0.0, pajak = 0.0, diskon = 0.0;
     static final double biayaPelayanan = 20000;
     static int jumlahPenawaran = 0;
-    static String[] promoBeli1Gratis1 = new String[2];
+    static String[] promoBeli1Gratis1 = new String[2]; // indeks-1 untuk simpan teks, indeks-2 untuk total harga promo
 
     static private double hitungTotalBiayaPembayaran(String[] pesanan, int[] jumlahPesanan, Menu[] daftarMenu) {
         totalBiayaPesanan = Pesanan.totalBiayaPesanan(0,pesanan,jumlahPesanan, daftarMenu, jumlahBiayaPesanan);
@@ -84,10 +84,7 @@ public class Main {
 
         boolean namaPesananDanMenuCocok = daftarMenu[indexMenu].getNama().equalsIgnoreCase(pesanan[indexPesanan]);
         boolean kategoriPesananAdalahMinuman = daftarMenu[indexMenu].getKategori().equalsIgnoreCase("Minuman");
-    
-        // Cek apakah item saat ini dalam pesanan cocok dengan item menu yang bersifat "Minuman"
         if (namaPesananDanMenuCocok && kategoriPesananAdalahMinuman) { // jika cocok terapkan bonus
-
             jumlahPenawaran = jumlahPesanan[indexPesanan];
             jumlahPesanan[indexPesanan] = jumlahPenawaran * 2; // Beli 1 Gratis 1 untuk item pertama
             
@@ -102,16 +99,13 @@ public class Main {
                 jumlahPenawaran
             );
 
-            return; // Setelah menerapkan bonus pada satu item, selesai
+            return;
         }
-    
-        /* Recursive scope Bonus Minuman */
-        // Jika item saat ini tidak sesuai, lanjutkan ke item berikutnya
-        if (indexMenu < daftarMenu.length - 1) {
-            // Cek dengan item berikutnya di daftar menu
+
+        // Jika item saat ini tidak cocok, lanjutkan ke item berikutnya
+        if (indexMenu < daftarMenu.length - 1) { // Jika item cocok, cek dengan item berikutnya di daftar menu
             terapkanBonusMinuman(indexPesanan, indexMenu + 1, pesanan, jumlahPesanan, daftarMenu);
-        } else {
-            // Jika sudah mengecek semua item di daftar menu untuk pesanan saat ini, lanjut ke pesanan berikutnya
+        } else { // Jika sudah mengecek semua item di daftar menu untuk pesanan saat ini, lanjut ke pesanan berikutnya
             terapkanBonusMinuman(indexPesanan + 1, 0, pesanan, jumlahPesanan, daftarMenu);
         }
     }
@@ -124,9 +118,8 @@ public class Main {
         System.out.println("-------------------------------------------------");
         cetakPesanan(0, pesanan, jumlahPesanan);
         
-        /* Jika dapat penawaran Beli 1 Gratis 1 */
+        /* Cetak jika dapat penawaran Beli 1 Gratis 1 */
         if (promoBeli1Gratis1[0] != null) {
-            // System.out.printf("%-18s %-14s x%-2s %-14s %n", Utils.kapitalisasiHurufPertama(pesanan[index]), Utils.tampilkanRupiah(Pesanan.temukanHargaPesanan(0, index, pesanan, daftarMenu)) , jumlahPesanan[index], Utils.tampilkanRupiah(jumlahBiayaPesanan[index]));
             System.out.printf("%-32s  x%-2s(%s)%n", 
                 promoBeli1Gratis1[0], jumlahPenawaran, 
                 Utils.tampilkanRupiah(Double.parseDouble(promoBeli1Gratis1[1]))
