@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -15,14 +16,14 @@ public class Main {
 
     static Scanner scanner = new Scanner(System.in);
 
-    static String[] pesanan = new String[4];
-    static int[] jumlahPesanan = new int[4];
+    static ArrayList<String> pesanan = new ArrayList<String>();
+    static ArrayList<Integer> jumlahPesanan = new ArrayList<>();
+    static ArrayList<Double> jumlahBiayaPesanan = new ArrayList<>();
     static double totalBiaya = 0;
-    static double[] jumlahBiayaPesanan = new double[pesanan.length];
 
 
     private static void tampilkanDaftarMenu(Menu[] daftarMenu) {
-        System.out.println("Selamat datang di Restoran Bakso Kami!");
+        System.out.println("Selamat datang di Restoran Bakso!");
         System.out.println("Di bawah adalah menu yang tersedia di resto kami. \n");
 
         System.out.println("============ DAFTAR MENU RESTORAN BAKSO ============ \n");
@@ -30,13 +31,13 @@ public class Main {
         System.out.println("----- MAKANAN --------------------------------------");
         System.out.printf("%-14s | %-14s %n", "Nama", "Harga");
         System.out.println("----------------------------------------------------");
-        Menu.filterMenuBerdasarkanKategori(0, daftarMenu, "Makanan");
+        Menu.cetakMenuBerdasarkanKategori(daftarMenu, "Makanan");
 
 
         System.out.println("\n\n----- MINUMAN --------------------------------------");
         System.out.printf("%-14s | %-14s %n", "Nama", "Harga");
         System.out.println("----------------------------------------------------");
-        Menu.filterMenuBerdasarkanKategori(0, daftarMenu, "Minuman");
+        Menu.cetakMenuBerdasarkanKategori(daftarMenu, "Minuman");
         System.out.println("----------------------------------------------------\n");
 
         System.out.println("Sudah melihat menu kami? Tekan ENTER untuk memesan.");
@@ -44,11 +45,11 @@ public class Main {
     }
 
     
-    private static void terimaDanOlahPesanan(String[] pesanan, int[] jumlahPesanan) {
-        System.out.println("Tuliskan pesanan anda di bawah ini (Maksimal 4 menu, format: Nama Menu = jumlahPesanan).");
+    private static void terimaDanOlahPesanan(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan) {
+        System.out.println("Tuliskan pesanan anda di bawah ini (Format: Nama Menu = jumlahPesanan).");
         System.out.println("Tulis \"Selesai\" untuk menyudahi pesanan.\n");
 
-        Pesanan.terimaPesanan(0, pesanan, jumlahPesanan, daftarMenu);
+        Pesanan.terimaPesanan(pesanan, jumlahPesanan, daftarMenu);
         
         totalBiaya = hitungTotalBiayaPembayaran(pesanan,jumlahPesanan,daftarMenu);
     }
@@ -58,8 +59,8 @@ public class Main {
     static int jumlahPenawaran = 0;
     static String[] promoBeli1Gratis1 = new String[2]; // indeks-1 untuk simpan teks, indeks-2 untuk total harga promo
 
-    static private double hitungTotalBiayaPembayaran(String[] pesanan, int[] jumlahPesanan, Menu[] daftarMenu) {
-        totalBiayaPesanan = Pesanan.totalBiayaPesanan(0,pesanan,jumlahPesanan, daftarMenu, jumlahBiayaPesanan);
+    static private double hitungTotalBiayaPembayaran(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu) {
+        totalBiayaPesanan = Pesanan.totalBiayaPesanan(pesanan,jumlahPesanan, daftarMenu, jumlahBiayaPesanan);
         pajak = 0.10 * totalBiayaPesanan;
 
         System.out.println("\nTotal pembelian anda adalah " + Utils.tampilkanRupiah(totalBiayaPesanan));
@@ -69,44 +70,36 @@ public class Main {
             System.out.printf("\n * Pembelian min Rp.100.000 mendapatkan diskon 10%% (%s). \n\n", 
                 Utils.tampilkanRupiah(diskon)
             );
-        } else if (totalBiayaPesanan > 50000) 
-            terapkanBonusMinuman(0, 0, pesanan, jumlahPesanan, daftarMenu);
+        } else if (totalBiayaPesanan > 50000) terapkanBonusMinuman(pesanan, jumlahPesanan, daftarMenu);
 
         double totalBiayaPembayaran = (totalBiayaPesanan + pajak + biayaPelayanan) - diskon;
-
         return totalBiayaPembayaran;
     }
 
-    static void terapkanBonusMinuman(int indexPesanan, int indexMenu, String[] pesanan, int[] jumlahPesanan, Menu[] daftarMenu) {
-        if (indexPesanan >= pesanan.length || indexMenu >= daftarMenu.length) {
-            return;
-        }
+    static void terapkanBonusMinuman(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu) {
+        for (int indexPesanan = 0; indexPesanan < daftarMenu.length; indexPesanan++) {
+            for (int indexMenu = 0; indexMenu < daftarMenu.length; indexMenu++) {
+                boolean namaPesananDanMenuCocok = daftarMenu[indexMenu].getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
+                boolean kategoriPesananAdalahMinuman = daftarMenu[indexMenu].getKategori().equalsIgnoreCase("Minuman");
 
-        boolean namaPesananDanMenuCocok = daftarMenu[indexMenu].getNama().equalsIgnoreCase(pesanan[indexPesanan]);
-        boolean kategoriPesananAdalahMinuman = daftarMenu[indexMenu].getKategori().equalsIgnoreCase("Minuman");
-        if (namaPesananDanMenuCocok && kategoriPesananAdalahMinuman) { // jika cocok terapkan bonus
-            jumlahPenawaran = jumlahPesanan[indexPesanan];
-            jumlahPesanan[indexPesanan] = jumlahPenawaran * 2; // Beli 1 Gratis 1 untuk item pertama
-            
-            double hargaTotal = daftarMenu[indexMenu].getHarga() * jumlahPesanan[indexPesanan]; // Hitung harga sesuai jumlah asli
-            jumlahBiayaPesanan[indexPesanan] = hargaTotal; // Set total biaya tanpa tambahan bonus
-            
-            promoBeli1Gratis1[0] = "Promo Beli 1 Gratis 1 (" + Utils.kapitalisasiHurufPertama(pesanan[indexPesanan]) + ")";
-            promoBeli1Gratis1[1] = Integer.toString(jumlahPenawaran * daftarMenu[indexMenu].getHarga());
-            
-            System.out.printf("\n * Pembelian min Rp.50.000 mendapatkan penawaran Beli 1 Gratis 1 untuk pesanan minuman pertama (%s x %d). \n\n", 
-                Utils.kapitalisasiHurufPertama(pesanan[indexPesanan]), 
-                jumlahPenawaran
-            );
+                if (namaPesananDanMenuCocok && kategoriPesananAdalahMinuman) { // jika cocok terapkan bonus
+                    jumlahPenawaran = jumlahPesanan.get(indexPesanan);
+                    jumlahPesanan.set(indexPesanan, jumlahPenawaran * 2);  // Beli 1 Gratis 1 untuk item pertama
+                    
+                    double hargaTotal = daftarMenu[indexMenu].getHarga() * jumlahPesanan.get(indexPesanan); // Hitung harga sesuai jumlah asli
+                    jumlahBiayaPesanan.set(indexPesanan, hargaTotal); // Set total biaya tanpa tambahan bonus
+                    
+                    promoBeli1Gratis1[0] = "Promo Beli 1 Gratis 1 (" + Utils.kapitalisasiHurufPertama(pesanan.get(indexPesanan)) + ")";
+                    promoBeli1Gratis1[1] = Integer.toString(jumlahPenawaran * daftarMenu[indexMenu].getHarga());
+                    
+                    System.out.printf("\n * Pembelian min Rp.50.000 mendapatkan penawaran Beli 1 Gratis 1 untuk pesanan minuman pertama (%s x %d). \n\n", 
+                        Utils.kapitalisasiHurufPertama(pesanan.get(indexPesanan)), 
+                        jumlahPenawaran
+                    );
 
-            return;
-        }
-
-        // Jika item saat ini tidak cocok, lanjutkan ke item berikutnya
-        if (indexMenu < daftarMenu.length - 1) { // Jika item cocok, cek dengan item berikutnya di daftar menu
-            terapkanBonusMinuman(indexPesanan, indexMenu + 1, pesanan, jumlahPesanan, daftarMenu);
-        } else { // Jika sudah mengecek semua item di daftar menu untuk pesanan saat ini, lanjut ke pesanan berikutnya
-            terapkanBonusMinuman(indexPesanan + 1, 0, pesanan, jumlahPesanan, daftarMenu);
+                    return;
+                }
+            }
         }
     }
     
@@ -116,7 +109,7 @@ public class Main {
 
         System.out.println("======== STRUK PEMBAYARAN RESTORAN BAKSO ========");
         System.out.println("-------------------------------------------------");
-        cetakPesanan(0, pesanan, jumlahPesanan);
+        cetakPesanan(pesanan, jumlahPesanan);
         
         /* Cetak jika dapat penawaran Beli 1 Gratis 1 */
         if (promoBeli1Gratis1[0] != null) {
@@ -155,16 +148,16 @@ public class Main {
         return " ".repeat(49-kata.length()-Utils.tampilkanRupiah(rupiah).length());
     }
 
-    private static void cetakPesanan(int index, String[] pesanan, int[] jumlahPesanan) {
-        if (index > pesanan.length - 1) return;
-        if (pesanan[index].isEmpty() || pesanan[index].equalsIgnoreCase("selesai")) return;
+    private static void cetakPesanan(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan) {      
+        for (int index = 0; index < pesanan.size(); index++) {
+            if (pesanan.get(index).isEmpty() || pesanan.get(index).equalsIgnoreCase("selesai")) return;
 
-        System.out.printf("%-18s %-14s x%-2s %-14s %n", 
-            Utils.kapitalisasiHurufPertama(pesanan[index]), 
-            Utils.tampilkanRupiah(Pesanan.temukanHargaPesanan(0, index, pesanan, daftarMenu)) , 
-            jumlahPesanan[index], Utils.tampilkanRupiah(jumlahBiayaPesanan[index])
-        );
-        cetakPesanan(index + 1, pesanan, jumlahPesanan);
+            System.out.printf("%-18s %-14s x%-2s %-14s %n", 
+                Utils.kapitalisasiHurufPertama(pesanan.get(index)), 
+                Utils.tampilkanRupiah(Pesanan.temukanHargaPesanan(index, pesanan, daftarMenu)) , 
+                jumlahPesanan.get(index), Utils.tampilkanRupiah(jumlahBiayaPesanan.get(index))
+            );
+        }
     }
     public static void main(String[] args) {
         tampilkanDaftarMenu(daftarMenu);

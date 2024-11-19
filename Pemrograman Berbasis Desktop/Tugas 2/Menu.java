@@ -25,11 +25,9 @@ public class Menu {
         System.out.printf("%-15s %-15s%n", nama, Utils.tampilkanRupiah(harga), kategori);
     }
 
-    public static void filterMenuBerdasarkanKategori(int index, Menu[] menu, String kategori) {
-        if (index > menu.length - 1) return;
-
-        if (menu[index].getKategori().equalsIgnoreCase(kategori)) { menu[index].cetakMenu(); }
-        
-        filterMenuBerdasarkanKategori(index+1, menu, kategori);
+    public static void cetakMenuBerdasarkanKategori(Menu[] menu, String kategori) {
+        for (Menu item : menu) {
+            if (item.getKategori().equalsIgnoreCase(kategori)) item.cetakMenu();
+        }
     }
 }

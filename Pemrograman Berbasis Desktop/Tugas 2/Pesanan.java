@@ -1,62 +1,77 @@
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Pesanan {
     static Scanner scanner = new Scanner(System.in);
-    static public void terimaPesanan(int index, String[] pesanan, int[] jumlahPesanan, Menu[] daftarMenu) {
-        if  (index > jumlahPesanan.length - 1) return;
+    static public void terimaPesanan(ArrayList<String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu) {
 
-        System.out.printf("Pesanan %s: ", index+1);
-        pesanan[index] = scanner.nextLine();
+        boolean running = true;
+        int index = 0;
+        while (running) {
+            System.out.printf("Pesanan %s: ", index+1);
+            pesanan.add(scanner.nextLine());
 
-        if (pesanan[index].equalsIgnoreCase("selesai")) {
-            if (index != 0) return;
-
-            System.out.println("Pesanan pertama tidak boleh kosong. Silahkan pilih salah satu menu untuk dipesan.");
-            terimaPesanan(index, pesanan, jumlahPesanan, daftarMenu);
-            return;
-        }
-        
-        boolean menuAda = Pesanan.cekKetersediaanPesanan(0, daftarMenu, pesanan, index, jumlahPesanan);
-        if (!menuAda) { // jika menu tidak tersedia, ulangi pemesanan
-            System.out.println("Menu tidak tersedia atau format salah. Mohon masukkan pesanan dengan menu yang tersedia dan format yang benar.");
-            terimaPesanan(index, pesanan, jumlahPesanan, daftarMenu);
-            return;
-        }
-
-        terimaPesanan(index + 1, pesanan, jumlahPesanan, daftarMenu);
-    }
-
-    public static boolean cekKetersediaanPesanan(int index, Menu[] daftarMenu, String[] pesanan,int noPesanan, int[] jumlahPesanan) {
-        if (index > daftarMenu.length - 1) return false;
-        
-        String namaPesanan = pesanan[noPesanan].split(" = ")[0];
-        boolean hasil = daftarMenu[index].getNama().equalsIgnoreCase(namaPesanan);
-        if (hasil) {
-            jumlahPesanan[noPesanan] = Integer.parseInt(pesanan[noPesanan].split(" = ")[1]);
-            pesanan[noPesanan] = namaPesanan;
-            return true;
-        }
-
-        return cekKetersediaanPesanan(index+1, daftarMenu, pesanan, noPesanan, jumlahPesanan);
-    }
-
-
-    protected static double totalBiayaPesanan(int indexPesanan, String[] pesanan, int[] jumlahPesanan, Menu[] daftarMenu, double[] jumlahBiayaPesanan) {        
-        if (indexPesanan > pesanan.length - 1) // jika index melebihi panjang array pesanan
-            return Arrays.stream(jumlahBiayaPesanan).sum(); // totalkan semua biaya pesanan
-
-        jumlahBiayaPesanan[indexPesanan] = temukanHargaPesanan(0, indexPesanan, pesanan, daftarMenu) * jumlahPesanan[indexPesanan];
-        
-        return totalBiayaPesanan(indexPesanan + 1, pesanan, jumlahPesanan, daftarMenu, jumlahBiayaPesanan);
-    }
-
-    protected static double temukanHargaPesanan(int index, int indexPesanan, String[] pesanan,Menu[] daftarMenu) {
-        if (index > daftarMenu.length - 1 || indexPesanan > pesanan.length - 1) return 0;
-
-        boolean namaPesananDanMenuCocok = daftarMenu[index].getNama().equalsIgnoreCase(pesanan[indexPesanan]);
-        if (namaPesananDanMenuCocok) return daftarMenu[index].getHarga();
+            if (pesanan.get(index).equalsIgnoreCase("selesai")) {
+                if (index != 0) {
+                    running = false;
+                    break;
+                }
     
-        return temukanHargaPesanan(index + 1, indexPesanan, pesanan, daftarMenu);
+                System.out.println("Pesanan pertama tidak boleh kosong. Silahkan pilih salah satu menu untuk dipesan.");
+                running = false;
+                break;
+            }
+
+            boolean menuAda = Pesanan.cekKetersediaanPesanan(daftarMenu, pesanan, index, jumlahPesanan);
+            if (!menuAda) { // jika menu tidak tersedia, ulangi pemesanan
+                System.out.println(pesanan.toString());
+                pesanan.remove(index);
+                System.out.println("Menu tidak tersedia atau format salah. Mohon masukkan pesanan dengan menu yang tersedia dan format yang benar.");
+                continue;
+            }
+            
+            index++;            
+        }      
+    }
+
+    public static boolean cekKetersediaanPesanan(Menu[] daftarMenu, ArrayList<String> pesanan,int noPesanan, ArrayList<Integer> jumlahPesanan) {
+        boolean ketemu = false;
+        for (int index = 0; index < daftarMenu.length - 1; index++) {
+            if (ketemu == true){ break; }
+            
+            String namaPesanan = pesanan.get(noPesanan).split(" = ")[0];
+            boolean hasil = daftarMenu[index].getNama().equalsIgnoreCase(namaPesanan);
+            if (hasil) {
+                int tempJumlahPesanan = Integer.parseInt(pesanan.get(noPesanan).split(" = ")[1]);
+                jumlahPesanan.add(tempJumlahPesanan);
+                pesanan.set(noPesanan,namaPesanan);
+                ketemu =  true;
+            } else { ketemu = false; }
+        }
+        return ketemu;
+    }
+
+    /* jumlah biaya pesanan = array yang menyimpan biaya2 pesanan */
+    protected static double totalBiayaPesanan(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu, ArrayList<Double> jumlahBiayaPesanan) {        
+        if (pesanan.size() == 0) return 0;
+        double hargaPesanan;
+        for (int indexPesanan = 0; indexPesanan < pesanan.size(); indexPesanan++) {
+            for (int indexMenu = 0; indexMenu < daftarMenu.length; indexMenu++) {
+                boolean namaPesananDanMenuCocok = daftarMenu[indexMenu].getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
+                if (namaPesananDanMenuCocok) {
+                    hargaPesanan = daftarMenu[indexMenu].getHarga();
+                    jumlahBiayaPesanan.add(hargaPesanan * jumlahPesanan.get(indexPesanan));
+                }
+            }
+        }
+        return jumlahBiayaPesanan.stream().mapToDouble(Double::doubleValue).sum(); // totalkan semua biaya pesanan
+    }
+
+    protected static double temukanHargaPesanan(int indexPesanan, ArrayList<String> pesanan,Menu[] daftarMenu) {
+        for (Menu menu : daftarMenu) {
+            boolean namaPesananDanMenuCocok = menu.getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
+            if (namaPesananDanMenuCocok) return menu.getHarga();
+        }
+        return 0;
     }
 }
