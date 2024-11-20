@@ -24,9 +24,8 @@ public class Pesanan {
 
             boolean menuAda = Pesanan.cekKetersediaanPesanan(daftarMenu, pesanan, index, jumlahPesanan);
             if (!menuAda) { // jika menu tidak tersedia, ulangi pemesanan
-                System.out.println(pesanan.toString());
                 pesanan.remove(index);
-                System.out.println("Menu tidak tersedia atau format salah. Mohon masukkan pesanan dengan menu yang tersedia dan format yang benar.");
+                System.out.println("(!) Menu tidak tersedia atau format salah. Mohon masukkan pesanan dengan menu yang tersedia dan format yang benar.");
                 continue;
             }
             
