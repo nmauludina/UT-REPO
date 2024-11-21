@@ -22,4 +22,8 @@ public class Utils {
     public static String kapitalisasiHurufPertama(String kata) {
         return kata.substring(0, 1).toUpperCase() + kata.substring(1);
     }
+
+    protected static String dapatkanJumlahSpasiStruk(String kata,double rupiah) {
+        return " ".repeat(49-kata.length()-Utils.tampilkanRupiah(rupiah).length());
+    }
 }

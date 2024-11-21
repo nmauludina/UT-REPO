@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class Pesanan {
     static Scanner scanner = new Scanner(System.in);
-    static public void terimaPesanan(ArrayList<String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu) {
+    static public void terimaPesanan(ArrayList<String> pesanan, ArrayList<Integer> jumlahPesanan, ArrayList<Menu> daftarMenu) {
 
         boolean running = true;
         int index = 0;
@@ -16,9 +16,10 @@ public class Pesanan {
                     running = false;
                     break;
                 }
-    
+                
+                /* PR | Ketika pesanan pertama selesai, harusnya minta inputan lagi dan tidak di skip. */
                 System.out.println("Pesanan pertama tidak boleh kosong. Silahkan pilih salah satu menu untuk dipesan.");
-                running = false;
+                running = true;
                 break;
             }
 
@@ -33,13 +34,13 @@ public class Pesanan {
         }      
     }
 
-    public static boolean cekKetersediaanPesanan(Menu[] daftarMenu, ArrayList<String> pesanan,int noPesanan, ArrayList<Integer> jumlahPesanan) {
+    public static boolean cekKetersediaanPesanan(ArrayList<Menu> daftarMenu, ArrayList<String> pesanan,int noPesanan, ArrayList<Integer> jumlahPesanan) {
         boolean ketemu = false;
-        for (int index = 0; index < daftarMenu.length - 1; index++) {
+        for (int index = 0; index < daftarMenu.size() - 1; index++) {
             if (ketemu == true){ break; }
             
             String namaPesanan = pesanan.get(noPesanan).split(" = ")[0];
-            boolean hasil = daftarMenu[index].getNama().equalsIgnoreCase(namaPesanan);
+            boolean hasil = daftarMenu.get(index).getNama().equalsIgnoreCase(namaPesanan);
             if (hasil) {
                 int tempJumlahPesanan = Integer.parseInt(pesanan.get(noPesanan).split(" = ")[1]);
                 jumlahPesanan.add(tempJumlahPesanan);
@@ -51,14 +52,14 @@ public class Pesanan {
     }
 
     /* jumlah biaya pesanan = array yang menyimpan biaya2 pesanan */
-    protected static double totalBiayaPesanan(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu, ArrayList<Double> jumlahBiayaPesanan) {        
+    protected static double totalBiayaPesanan(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, ArrayList<Menu> daftarMenu, ArrayList<Double> jumlahBiayaPesanan) {        
         if (pesanan.size() == 0) return 0;
         double hargaPesanan;
         for (int indexPesanan = 0; indexPesanan < pesanan.size(); indexPesanan++) {
-            for (int indexMenu = 0; indexMenu < daftarMenu.length; indexMenu++) {
-                boolean namaPesananDanMenuCocok = daftarMenu[indexMenu].getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
+            for (int indexMenu = 0; indexMenu < daftarMenu.size(); indexMenu++) {
+                boolean namaPesananDanMenuCocok = daftarMenu.get(indexMenu).getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
                 if (namaPesananDanMenuCocok) {
-                    hargaPesanan = daftarMenu[indexMenu].getHarga();
+                    hargaPesanan = daftarMenu.get(indexMenu).getHarga();
                     jumlahBiayaPesanan.add(hargaPesanan * jumlahPesanan.get(indexPesanan));
                 }
             }
@@ -66,7 +67,7 @@ public class Pesanan {
         return jumlahBiayaPesanan.stream().mapToDouble(Double::doubleValue).sum(); // totalkan semua biaya pesanan
     }
 
-    protected static double temukanHargaPesanan(int indexPesanan, ArrayList<String> pesanan,Menu[] daftarMenu) {
+    protected static double temukanHargaPesanan(int indexPesanan, ArrayList<String> pesanan,ArrayList<Menu> daftarMenu) {
         for (Menu menu : daftarMenu) {
             boolean namaPesananDanMenuCocok = menu.getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
             if (namaPesananDanMenuCocok) return menu.getHarga();

@@ -2,17 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    static Menu[] daftarMenu = {
-        new Menu("Air Mineral", 7000, "Minuman"),
-        new Menu("Es Teh", 8000, "Minuman"),
-        new Menu("Kopi", 10000, "Minuman"),
-        new Menu("Es Teler", 15000, "Minuman"),
-        new Menu("Bakso", 25000, "Makanan"),
-        new Menu("Soun Bakso", 32000, "Makanan"),
-        new Menu("Mie Bakso", 35000, "Makanan"),
-        new Menu("Bakso Mie Kari", 43000, "Makanan"),
-        new Menu("Mie Ayam Bakso", 38000, "Makanan"),
-    };
+    static ArrayList<Menu> daftarMenu = new ArrayList<>();
 
     static Scanner scanner = new Scanner(System.in);
 
@@ -22,9 +12,9 @@ public class Main {
     static double totalBiaya = 0;
 
 
-    private static void tampilkanDaftarMenu(Menu[] daftarMenu) {
-        System.out.println("Selamat datang di Restoran Bakso!");
-        System.out.println("Di bawah adalah menu yang tersedia di resto kami. \n");
+    private static void tampilkanDaftarMenu(ArrayList<Menu> daftarMenu) {
+        System.out.println("\n\nSelamat datang di Restoran Bakso!");
+        System.out.println("Di bawah adalah menu yang tersedia di sini. \n");
 
         System.out.println("============ DAFTAR MENU RESTORAN BAKSO ============ \n");
 
@@ -59,7 +49,7 @@ public class Main {
     static int jumlahPenawaran = 0;
     static String[] promoBeli1Gratis1 = new String[2]; // indeks-1 untuk simpan teks, indeks-2 untuk total harga promo
 
-    static private double hitungTotalBiayaPembayaran(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu) {
+    static private double hitungTotalBiayaPembayaran(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, ArrayList<Menu> daftarMenu) {
         totalBiayaPesanan = Pesanan.totalBiayaPesanan(pesanan,jumlahPesanan, daftarMenu, jumlahBiayaPesanan);
         pajak = 0.10 * totalBiayaPesanan;
 
@@ -76,21 +66,21 @@ public class Main {
         return totalBiayaPembayaran;
     }
 
-    static void terapkanBonusMinuman(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, Menu[] daftarMenu) {
-        for (int indexPesanan = 0; indexPesanan < daftarMenu.length; indexPesanan++) {
-            for (int indexMenu = 0; indexMenu < daftarMenu.length; indexMenu++) {
-                boolean namaPesananDanMenuCocok = daftarMenu[indexMenu].getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
-                boolean kategoriPesananAdalahMinuman = daftarMenu[indexMenu].getKategori().equalsIgnoreCase("Minuman");
+    static void terapkanBonusMinuman(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan, ArrayList<Menu> daftarMenu) {
+        for (int indexPesanan = 0; indexPesanan < daftarMenu.size(); indexPesanan++) {
+            for (int indexMenu = 0; indexMenu < daftarMenu.size(); indexMenu++) {
+                boolean namaPesananDanMenuCocok = daftarMenu.get(indexMenu).getNama().equalsIgnoreCase(pesanan.get(indexPesanan));
+                boolean kategoriPesananAdalahMinuman = daftarMenu.get(indexMenu).getKategori().equalsIgnoreCase("Minuman");
 
                 if (namaPesananDanMenuCocok && kategoriPesananAdalahMinuman) { // jika cocok terapkan bonus
                     jumlahPenawaran = jumlahPesanan.get(indexPesanan);
                     jumlahPesanan.set(indexPesanan, jumlahPenawaran * 2);  // Beli 1 Gratis 1 untuk item pertama
                     
-                    double hargaTotal = daftarMenu[indexMenu].getHarga() * jumlahPesanan.get(indexPesanan); // Hitung harga sesuai jumlah asli
+                    double hargaTotal = daftarMenu.get(indexMenu).getHarga() * jumlahPesanan.get(indexPesanan); // Hitung harga sesuai jumlah asli
                     jumlahBiayaPesanan.set(indexPesanan, hargaTotal); // Set total biaya tanpa tambahan bonus
                     
                     promoBeli1Gratis1[0] = "Promo Beli 1 Gratis 1 (" + Utils.kapitalisasiHurufPertama(pesanan.get(indexPesanan)) + ")";
-                    promoBeli1Gratis1[1] = Integer.toString(jumlahPenawaran * daftarMenu[indexMenu].getHarga());
+                    promoBeli1Gratis1[1] = Integer.toString(jumlahPenawaran * daftarMenu.get(indexMenu).getHarga());
                     
                     System.out.printf("\n * Pembelian min Rp.50.000 mendapatkan penawaran Beli 1 Gratis 1 untuk pesanan minuman pertama (%s x %d). \n\n", 
                         Utils.kapitalisasiHurufPertama(pesanan.get(indexPesanan)), 
@@ -121,31 +111,57 @@ public class Main {
         
         System.out.println("-------------------------------------------------");
         System.out.printf("TOTAL%s%s\n", 
-            dapatkanJumlahSpasiStruk("TOTAL", totalBiayaPesanan), 
+            Utils.dapatkanJumlahSpasiStruk("TOTAL", totalBiayaPesanan), 
             Utils.tampilkanRupiah(totalBiayaPesanan)
         );
         if (diskon != 0) {
-            System.out.printf("Diskon 10%%%s(%s)\n", dapatkanJumlahSpasiStruk("(Diskon10%)", diskon), Utils.tampilkanRupiah(diskon));
+            System.out.printf("Diskon 10%%%s(%s)\n", Utils.dapatkanJumlahSpasiStruk("(Diskon10%)", diskon), Utils.tampilkanRupiah(diskon));
         }
         System.out.printf("Pajak%s%s\n", 
-            dapatkanJumlahSpasiStruk("Pajak", pajak), 
+            Utils.dapatkanJumlahSpasiStruk("Pajak", pajak), 
             Utils.tampilkanRupiah(pajak)
         );
         System.out.printf("B.Pelayanan%s%s\n", 
-            dapatkanJumlahSpasiStruk("B.Pelayanan", biayaPelayanan), 
+            Utils.dapatkanJumlahSpasiStruk("B.Pelayanan", biayaPelayanan), 
             Utils.tampilkanRupiah(biayaPelayanan)
         );
         System.out.println("-------------------------------------------------");
         System.out.printf("TOTAL PEMBAYARAN%s%s\n", 
-            dapatkanJumlahSpasiStruk("TOTAL PEMBAYARAN", totalBiaya), 
+            Utils.dapatkanJumlahSpasiStruk("TOTAL PEMBAYARAN", totalBiaya), 
             Utils.tampilkanRupiah(totalBiaya)
         );
     
         System.out.println("\n\nTerima kasih sudah berbelanja. Have a nice day! :)");
-    }
+    }   
 
-    private static String dapatkanJumlahSpasiStruk(String kata,double rupiah) {
-        return " ".repeat(49-kata.length()-Utils.tampilkanRupiah(rupiah).length());
+    public static void menuUtama() {
+        System.out.println("-------------------------------------------------");
+        System.out.println("SELAMAT DATANG DI RESTORAN BAKSO!");
+        System.out.println("1 - Kelola menu restoran");
+        System.out.println("2 - Pesan makanan/minuman");
+        boolean ulangi = false;
+        do {
+            ulangi = false;
+            System.out.print("Masukkan pilihan untuk meneruskan tindakan: ");
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    PengelolaanMenu.kelolaMenuRestoran();
+                    break;
+            
+                case "2":
+                    tampilkanDaftarMenu(daftarMenu);
+                    terimaDanOlahPesanan(pesanan, jumlahPesanan);
+                    cetakStrukPesanan();
+                    break;
+            
+                default:
+                    System.out.println("\t(!) Masukan tidak tersedia, silahkan masukkan pilihan yang benar.");
+                    ulangi = true;
+                    break;
+            }
+        } while (ulangi);     
     }
 
     private static void cetakPesanan(ArrayList <String> pesanan, ArrayList<Integer> jumlahPesanan) {      
@@ -159,11 +175,21 @@ public class Main {
             );
         }
     }
+
+    public static void inisialisasiDaftarMenu() {
+        daftarMenu.add(new Menu("Air Mineral", 7000, "Minuman"));
+        daftarMenu.add(new Menu("Es Teh", 8000, "Minuman"));
+        daftarMenu.add(new Menu("Kopi", 10000, "Minuman"));
+        daftarMenu.add(new Menu("Es Teler", 15000, "Minuman"));
+        daftarMenu.add(new Menu("Bakso", 25000, "Makanan"));
+        daftarMenu.add(new Menu("Soun Bakso", 32000, "Makanan"));
+        daftarMenu.add(new Menu("Mie Bakso", 35000, "Makanan"));
+        daftarMenu.add(new Menu("Bakso Mie Kari", 43000, "Makanan"));
+        daftarMenu.add(new Menu("Mie Ayam Bakso", 38000, "Makanan"));
+    }
+
     public static void main(String[] args) {
-        tampilkanDaftarMenu(daftarMenu);
-
-        terimaDanOlahPesanan(pesanan, jumlahPesanan);
-
-        cetakStrukPesanan();
+        inisialisasiDaftarMenu();        
+        menuUtama();
     }
 }
