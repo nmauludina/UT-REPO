@@ -40,7 +40,7 @@ public class Menu {
     }
 
     public void cetakMenu() {
-        System.out.printf("%-15s %-15s%n", nama, Utils.tampilkanRupiah(harga), kategori);
+        System.out.printf("%-15s %-15s%n", Utils.kapitalisasiHurufPertama(nama), Utils.tampilkanRupiah(harga), Utils.kapitalisasiHurufPertama(kategori));
     }
 
     public static void cetakMenuBerdasarkanKategori(ArrayList<Menu> menu, String kategori) {
