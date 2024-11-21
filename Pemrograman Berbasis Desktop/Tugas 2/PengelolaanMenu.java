@@ -1,21 +1,18 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class PengelolaanMenu {
     static Scanner scanner = new Scanner(System.in);
     
     public static void kelolaMenuRestoran() {
-        System.out.println("-------------------------------------------------");
-        System.out.println("\t> KELOLA MENU RESTORAN");
-        System.out.println("\t  1 - Tambah menu baru");
-        System.out.println("\t  2 - Ubah harga menu");
-        System.out.println("\t  3 - Hapus menu");
-        System.out.println("\t  4 - Kembali (Menu Utama)\n");
-
-        boolean ulangi = false;
+        boolean ulangi = true;
         do {
-            ulangi = false;
+            System.out.println("-------------------------------------------------");
+            System.out.println("\t> KELOLA MENU RESTORAN");
+            System.out.println("\t  1 - Tambah menu baru");
+            System.out.println("\t  2 - Ubah harga menu");
+            System.out.println("\t  3 - Hapus menu");
+            System.out.println("\t  4 - Kembali (Menu Utama)\n");
             System.out.print("\t  Pilihan: ");
             String input = scanner.nextLine();
 
@@ -30,10 +27,9 @@ public class PengelolaanMenu {
                     hapusMenu();
                     break;
                 case "4":
-                    System.out.println("\t  Kembali ke menu utama");
-                    // Main.menuUtama();
-                    // break;
-                    return;
+                    System.out.println("\t  - Kembali ke menu utama");
+                    ulangi = false;
+                    break;
             
                 default:
                     System.out.println("\t  (!) Pilihan tidak tersedia, silahkan masukkan pilihan yang valid.");
@@ -43,9 +39,9 @@ public class PengelolaanMenu {
         } while (ulangi);
     }
 
-    private static void tambahMenuBaruBulk(String konfirmasi, ArrayList<Menu> menuBaru) {
+    private static boolean tambahMenuBaruBulk(String konfirmasi, ArrayList<Menu> menuBaru) {
         int index = 0;
-        boolean lanjutkan = false;
+        boolean lanjutkan = true;
         do {
             System.out.println("\n \t   Silahkan masukkan data menu ke-" + (index+1));
     
@@ -74,15 +70,12 @@ public class PengelolaanMenu {
             String tambahlagi = scanner.nextLine();
 
             if (tambahlagi.equalsIgnoreCase("ya")){
-                lanjutkan = true;
                 index++;
             } else {
                 lanjutkan = false;
-                break;
             }
-
-            System.out.println("Kondisi: "+!konfirmasi.equalsIgnoreCase("ya")  +" lanjutkan:" +!!lanjutkan);
         } while (!konfirmasi.equalsIgnoreCase("ya") && !!lanjutkan);
+        return lanjutkan;
     }
 
     private static void tambahMenuBaru() {
@@ -98,15 +91,19 @@ public class PengelolaanMenu {
          * <String>.matches() mereturn true/false
          * digunakan untuk menyaring String input:
          * 1. Apakah input terdapat yang bukan "ya"?
-         * 2. Apakah input merupakan angka untuk kembali ke Menu Kelola
+         * 2. Apakah input merupakan angka untuk kembali ke Menu Kelola?
          * 3. Apakah input merupakan kata "tidak"?
          */
         if (input.matches("(?i)\bya\b|^"+ (Main.daftarMenu.size()+1) + "$|(?i)tidak")) {
-            kembaliKeMenuKelolaMenuRestoran(true);
+            System.out.println(" \t   - Batal tambah menu baru");
+            kembaliKeMenu("Tambah Menu Baru");
+            return;
         } else {
             String konfirmasi = "";
             ArrayList<Menu> menuBaru = new ArrayList<Menu>();
             tambahMenuBaruBulk(konfirmasi, menuBaru);
+
+            if (menuBaru.size() == 0) return;
 
             System.out.println("\n \t   Menu baru yang akan ditambahkan: ");
             tampilkanDaftarMenu(menuBaru, false);
@@ -115,15 +112,18 @@ public class PengelolaanMenu {
             String yakinTambah = scanner.nextLine();
 
             if (!yakinTambah.equalsIgnoreCase("ya")) {
-                kembaliKeMenuKelolaMenuRestoran(true);
+                System.out.println(" \t   - Tambah menu baru dibatalkan");
+                kembaliKeMenu("Tambah Menu Baru");
+                return;
+            } else {
+                for (Menu menu : menuBaru) {
+                    Main.daftarMenu.add(menu);
+                }
+                System.out.println(" \t   - Berhasil menambahkan menu baru");
+                kembaliKeMenu("Tambah Menu Baru");
                 return;
             }
 
-            for (Menu menu : menuBaru) {
-                Main.daftarMenu.add(menu);
-            }
-            kembaliKeMenuKelolaMenuRestoran(true);
-            return;
         }
     }
 
@@ -133,7 +133,7 @@ public class PengelolaanMenu {
         tampilkanDaftarMenu(Main.daftarMenu, true);
         Integer pilihan;
         do {
-            System.out.println(" \t   Menu berapa yang harganya mau diubah?");
+            System.out.println("\n \t   Menu berapa yang harganya mau diubah?");
             System.out.print(" \t   Pilihan: ");
             pilihan = scanner.nextInt();
             scanner.nextLine();
@@ -144,7 +144,11 @@ public class PengelolaanMenu {
             }
         } while (!(pilihan > 0 && pilihan <= (Main.daftarMenu.size()+1) || pilihan instanceof Integer));
         
-        kembaliKeMenuKelolaMenuRestoran(pilihan.equals(Main.daftarMenu.size()+1));
+        if (pilihan.equals(Main.daftarMenu.size()+1)) {
+            System.out.println(" \t   - Batal mengubah harga menu");
+            kembaliKeMenu("Ubah Harga Menu");
+            return;
+        }
 
         System.out.print(" \t   Masukkan nominal harga untuk menu "+Main.daftarMenu.get(pilihan-1).getNama()+": ");
         int harga = scanner.nextInt();
@@ -162,14 +166,12 @@ public class PengelolaanMenu {
             menuTerpilih.setHarga(harga);
             System.out.print(" \t   ");
             menuTerpilih.cetakMenu();
-            System.out.println(" \t   - Harga menu " + menuTerpilih.getNama() + " berhasil diperbaharui.");
-            kembaliKeMenuKelolaMenuRestoran(true);
+            System.out.println(" \t   - Harga menu " + Utils.kapitalisasiHurufPertama(menuTerpilih.getNama()) + " berhasil diperbaharui.");
         } else {
             System.err.println(" \t   - Ubah harga menu dibatalkan.");
-            System.err.println(" \t   < Kembali ke Menu Ubah Harga Menu.");
-            ubahHargaMenu();
-            return;
         }
+        kembaliKeMenu("Ubah Harga Menu");
+        return;
     }
 
     private static void hapusMenu() {
@@ -178,32 +180,32 @@ public class PengelolaanMenu {
         tampilkanDaftarMenu(Main.daftarMenu, true);
         Integer pilihan;
         do {
-            System.out.println(" \tMenu berapa yang mau dihapus?");
+            System.out.println("\n \tMenu berapa yang mau dihapus?");
             System.out.print(" \tPilihan: ");
             pilihan = scanner.nextInt();
             scanner.nextLine();
-            
-            System.out.println("Pilihan hapus menu: " + pilihan);
-            tampilkanDaftarMenu(Main.daftarMenu, true);
             
             if (!(pilihan > 0 && pilihan <= (Main.daftarMenu.size()+1) || pilihan instanceof Integer)) {
                 System.out.println(" \t   Masukkan pilihan yang valid.");
             }
         } while (!(pilihan > 0 && pilihan <= (Main.daftarMenu.size()+1) || pilihan instanceof Integer));
 
-        kembaliKeMenuKelolaMenuRestoran(pilihan.equals(Main.daftarMenu.size()+1));
+        if (pilihan.equals(Main.daftarMenu.size()+1)) {
+            System.out.println(" \t   - Batal menghapus item menu");
+            kembaliKeMenu("Hapus Item Menu");
+            return;
+        }
 
         System.out.print("\n \t   Yakin menghapus menu " + Main.daftarMenu.get(pilihan-1).getNama() + " (Ya/Tidak)? ");
         String konfirmasi = scanner.nextLine();
         if (konfirmasi.equalsIgnoreCase("ya")) {
             Main.daftarMenu.remove(pilihan-1);
             System.out.println(" \t   - Menu berhasil dihapus.");
-            kembaliKeMenuKelolaMenuRestoran(true);
         } else {
             System.err.println(" \t   - Hapus item menu dibatalkan.");
-            System.err.println(" \t   < Kembali ke Menu Hapus Item Menu.");
-            hapusMenu();
         }
+        kembaliKeMenu("Hapus Item Menu");
+        return;
     }
 
     private static void tampilkanDaftarMenu(ArrayList<Menu> daftarMenu, boolean tampilkanNavigasiKembali) {
@@ -217,10 +219,7 @@ public class PengelolaanMenu {
         }
     }
 
-    private static void kembaliKeMenuKelolaMenuRestoran(boolean kondisi) {
-        if (!kondisi) return;
-
-        System.out.println(" \t   < Kembali ke Menu Kelola Menu Restoran");
-        kelolaMenuRestoran();
+    private static void kembaliKeMenu(String judulMenu) {
+        System.out.println(" \t   < Kembali ke Menu " + judulMenu);
     }
 }

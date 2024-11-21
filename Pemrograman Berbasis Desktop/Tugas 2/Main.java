@@ -135,13 +135,13 @@ public class Main {
     }   
 
     public static void menuUtama() {
-        System.out.println("-------------------------------------------------");
-        System.out.println("SELAMAT DATANG DI RESTORAN BAKSO!");
-        System.out.println("1 - Kelola menu restoran");
-        System.out.println("2 - Pesan makanan/minuman");
-        boolean ulangi = false;
+        boolean ulangi = true;
         do {
-            ulangi = false;
+            System.out.println("-------------------------------------------------");
+            System.out.println("SELAMAT DATANG DI RESTORAN BAKSO!");
+            System.out.println("1 - Kelola menu restoran");
+            System.out.println("2 - Pesan makanan/minuman");
+            
             System.out.print("Masukkan pilihan untuk meneruskan tindakan: ");
             String input = scanner.nextLine();
 
