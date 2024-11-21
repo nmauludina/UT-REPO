@@ -4,12 +4,17 @@ import java.util.Scanner;
 public class Pesanan {
     static Scanner scanner = new Scanner(System.in);
     static public void terimaPesanan(ArrayList<String> pesanan, ArrayList<Integer> jumlahPesanan, ArrayList<Menu> daftarMenu) {
-
         boolean running = true;
         int index = 0;
-        while (running) {
+
+        do {
             System.out.printf("Pesanan %s: ", index+1);
-            pesanan.add(scanner.nextLine());
+
+            if (pesanan.size() == 1 && pesanan.get(0).equalsIgnoreCase("selesai")) {
+                pesanan.set(index, scanner.nextLine());       
+            } else {
+                pesanan.add(index, scanner.nextLine());
+            }
 
             if (pesanan.get(index).equalsIgnoreCase("selesai")) {
                 if (index != 0) {
@@ -17,21 +22,20 @@ public class Pesanan {
                     break;
                 }
                 
-                /* PR | Ketika pesanan pertama selesai, harusnya minta inputan lagi dan tidak di skip. */
                 System.out.println("Pesanan pertama tidak boleh kosong. Silahkan pilih salah satu menu untuk dipesan.");
                 running = true;
-                break;
+                continue;
             }
 
             boolean menuAda = Pesanan.cekKetersediaanPesanan(daftarMenu, pesanan, index, jumlahPesanan);
             if (!menuAda) { // jika menu tidak tersedia, ulangi pemesanan
-                pesanan.remove(index);
                 System.out.println("(!) Menu tidak tersedia atau format salah. Mohon masukkan pesanan dengan menu yang tersedia dan format yang benar.");
+                pesanan.remove(pesanan.size()-1);
                 continue;
             }
-            
-            index++;            
-        }      
+            index++;
+
+        } while (pesanan.size() == 1 || pesanan.get(index-1) != "selesai");
     }
 
     public static boolean cekKetersediaanPesanan(ArrayList<Menu> daftarMenu, ArrayList<String> pesanan,int noPesanan, ArrayList<Integer> jumlahPesanan) {
