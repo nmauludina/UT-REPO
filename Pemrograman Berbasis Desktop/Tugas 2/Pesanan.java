@@ -4,9 +4,7 @@ import java.util.Scanner;
 public class Pesanan {
     static Scanner scanner = new Scanner(System.in);
     static public void terimaPesanan(ArrayList<String> pesanan, ArrayList<Integer> jumlahPesanan, ArrayList<Menu> daftarMenu) {
-        boolean running = true;
         int index = 0;
-
         do {
             System.out.printf("Pesanan %s: ", index+1);
 
@@ -17,13 +15,9 @@ public class Pesanan {
             }
 
             if (pesanan.get(index).equalsIgnoreCase("selesai")) {
-                if (index != 0) {
-                    running = false;
-                    break;
-                }
+                if (index != 0) break;
                 
                 System.out.println("Pesanan pertama tidak boleh kosong. Silahkan pilih salah satu menu untuk dipesan.");
-                running = true;
                 continue;
             }
 
