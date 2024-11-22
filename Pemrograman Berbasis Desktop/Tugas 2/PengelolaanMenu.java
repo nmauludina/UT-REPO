@@ -101,7 +101,7 @@ public class PengelolaanMenu {
         } else {
             String konfirmasi = "";
             ArrayList<Menu> menuBaru = new ArrayList<Menu>();
-            tambahMenuBaruBulk(konfirmasi, menuBaru);
+            tambahMenuBaruBulk(konfirmasi, menuBaru); // menambahkan 1 atau lebih menu sekaligus
 
             if (menuBaru.size() == 0) return;
 

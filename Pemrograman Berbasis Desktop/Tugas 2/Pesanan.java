@@ -5,6 +5,7 @@ public class Pesanan {
     static Scanner scanner = new Scanner(System.in);
     static public void terimaPesanan(ArrayList<String> pesanan, ArrayList<Integer> jumlahPesanan, ArrayList<Menu> daftarMenu) {
         int index = 0;
+        boolean ulangi = true;
         do {
             System.out.printf("Pesanan %s: ", index+1);
 
@@ -28,8 +29,7 @@ public class Pesanan {
                 continue;
             }
             index++;
-
-        } while (pesanan.size() == 1 || pesanan.get(index-1) != "selesai");
+        } while (ulangi); // selama ulangi adalah true maka program dalam do jalan.
     }
 
     public static boolean cekKetersediaanPesanan(ArrayList<Menu> daftarMenu, ArrayList<String> pesanan,int noPesanan, ArrayList<Integer> jumlahPesanan) {
