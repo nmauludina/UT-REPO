@@ -84,47 +84,54 @@ public class PengelolaanMenu {
 
         System.out.println(" \t   Daftar Menu Saat Ini:");
         tampilkanDaftarMenu(Main.daftarMenu, true);
-        System.out.print("\n \t   Tambah menu (Ya/Tidak)? ");
-        String input = scanner.nextLine();
         
-        /* 
-         * <String>.matches() mereturn true/false
-         * digunakan untuk menyaring String input:
-         * 1. Apakah input terdapat yang bukan "ya"?
-         * 2. Apakah input merupakan angka untuk kembali ke Menu Kelola?
-         * 3. Apakah input merupakan kata "tidak"?
-         */
-        if (input.matches("(?i)\bya\b|^"+ (Main.daftarMenu.size()+1) + "$|(?i)tidak")) {
-            System.out.println(" \t   - Batal tambah menu baru");
-            kembaliKeMenu("Tambah Menu Baru");
-            return;
-        } else {
-            String konfirmasi = "";
-            ArrayList<Menu> menuBaru = new ArrayList<Menu>();
-            tambahMenuBaruBulk(konfirmasi, menuBaru); // menambahkan 1 atau lebih menu sekaligus
-
-            if (menuBaru.size() == 0) return;
-
-            System.out.println("\n \t   Menu baru yang akan ditambahkan: ");
-            tampilkanDaftarMenu(menuBaru, false);
-            
-            System.out.printf("\n \t   Yakin menambah menu baru di atas (Ya/Tidak)? ");
-            String yakinTambah = scanner.nextLine();
-
-            if (!yakinTambah.equalsIgnoreCase("ya")) {
-                System.out.println(" \t   - Tambah menu baru dibatalkan");
+        boolean masukanTidakValid = true;
+        do {
+            System.out.print("\n \t   Tambah menu (Ya/Tidak)? ");
+            String input = scanner.nextLine();
+    
+            /* 
+             * <String>.matches() mereturn true/false
+             * digunakan untuk menyaring String input:
+             * 1. Apakah input terdapat yang bukan "ya"?
+             * 2. Apakah input merupakan angka untuk kembali ke Menu Kelola?
+             * 3. Apakah input merupakan kata "tidak"?
+             */
+            if (input.equalsIgnoreCase("ya")){
+                String konfirmasi = "";
+                ArrayList<Menu> menuBaru = new ArrayList<Menu>();
+                tambahMenuBaruBulk(konfirmasi, menuBaru); // menambahkan 1 atau lebih menu sekaligus
+    
+                if (menuBaru.size() == 0) return;
+    
+                System.out.println("\n \t   Menu baru yang akan ditambahkan: ");
+                tampilkanDaftarMenu(menuBaru, false);
+                
+                System.out.printf("\n \t   Yakin menambah menu baru di atas (Ya/Tidak)? ");
+                String yakinTambah = scanner.nextLine();
+    
+                if (!yakinTambah.equalsIgnoreCase("ya")) {
+                    System.out.println(" \t   - Tambah menu baru dibatalkan");
+                    kembaliKeMenu("Tambah Menu Baru");
+                    return;
+                } else {
+                    for (Menu menu : menuBaru) {
+                        Main.daftarMenu.add(menu);
+                    }
+                    System.out.println(" \t   - Berhasil menambahkan menu baru");
+                    kembaliKeMenu("Tambah Menu Baru");
+                    return;
+                }
+            } else if (input.equalsIgnoreCase("tidak") || input.matches(""+(Main.daftarMenu.size()+1)+"")) {
+                System.out.println(" \t   - Batal tambah menu baru");
                 kembaliKeMenu("Tambah Menu Baru");
                 return;
             } else {
-                for (Menu menu : menuBaru) {
-                    Main.daftarMenu.add(menu);
-                }
-                System.out.println(" \t   - Berhasil menambahkan menu baru");
-                kembaliKeMenu("Tambah Menu Baru");
-                return;
+                System.out.println(" \t   - Masukan tidak valid");
+                masukanTidakValid = true;
             }
-
-        }
+        } while (masukanTidakValid);
+        
     }
 
     private static void ubahHargaMenu() {
@@ -185,16 +192,17 @@ public class PengelolaanMenu {
             pilihan = scanner.nextInt();
             scanner.nextLine();
             
-            if (!(pilihan > 0 && pilihan <= (Main.daftarMenu.size()+1) || pilihan instanceof Integer)) {
+            if (pilihan > Main.daftarMenu.size() + 1 || !(pilihan > 0 && pilihan <= (Main.daftarMenu.size()+1))) {
                 System.out.println(" \t   Masukkan pilihan yang valid.");
             }
-        } while (!(pilihan > 0 && pilihan <= (Main.daftarMenu.size()+1) || pilihan instanceof Integer));
+        } while (pilihan > Main.daftarMenu.size() + 1 || !(pilihan > 0 && pilihan <= (Main.daftarMenu.size()+1)));
 
         if (pilihan.equals(Main.daftarMenu.size()+1)) {
             System.out.println(" \t   - Batal menghapus item menu");
             kembaliKeMenu("Hapus Item Menu");
             return;
         }
+
 
         System.out.print("\n \t   Yakin menghapus menu " + Main.daftarMenu.get(pilihan-1).getNama() + " (Ya/Tidak)? ");
         String konfirmasi = scanner.nextLine();

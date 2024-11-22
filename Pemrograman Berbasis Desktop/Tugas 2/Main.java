@@ -132,7 +132,20 @@ public class Main {
         );
     
         System.out.println("\n\nTerima kasih sudah berbelanja. Have a nice day! :)");
+        kosongkanSemuaVariabel();
     }   
+
+    public static void kosongkanSemuaVariabel() {
+        pesanan.clear();
+        jumlahPesanan.clear();
+        jumlahBiayaPesanan.clear();
+        totalBiaya = 0;
+        totalBiayaPesanan = 0;
+        pajak = 0;
+        jumlahPenawaran = 0;
+        promoBeli1Gratis1 = new String[2];
+        diskon = 0;
+    }
 
     public static void menuUtama() {
         boolean ulangi = true;
