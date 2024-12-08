@@ -1,0 +1,3 @@
+interface Ui {
+    void main();
+}

@@ -27,7 +27,7 @@ Sekarang, anda diminta untuk membuat program Java yang akan digunakan untuk mana
     - Menampilkan struk pesanan pelanggan.
     - Keluar dari program.
 
-9. Implementasikan operasi I/O dan operasi file untuk menyimpan dan memuat daftar menu dari sebuah file teks, dan juga menyimpan struk pesananan pelanggan dan memuat dari file teks.
+9. Implementasikan operasi I/O dan operasi file untuk menyimpan dan memuat daftar menu dari sebuah file teks, dan juga menyimpan struk pesananan pelanggan dan memuat dari file teks. | gimana cara upload nya? gimana cara simpannya? jenis file nya gimana? .txt
 10. Gunakan struktur keputusan dan pengulangan sesuai dengan kebutuhan, seperti saat menampilkan menu dan memproses pesanan.
 
 11. Durasi video penjelasan maksimal 15 menit
