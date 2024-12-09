@@ -5,16 +5,10 @@ public class UiPesanan implements Ui {
         this.managementMenu = managementMenu;
     }
 
-    // UI management menu, akses data "menu" juga dari sini
+    Order order = new Order();
     ManagementMenu managementMenu;
 
-    // membuat order baru
-    Order order = new Order();
-
     Scanner scanner = new Scanner(System.in);
-
-    public UiPesanan(Order order) {
-    }
 
     @Override
     public void main() {
@@ -72,17 +66,17 @@ public class UiPesanan implements Ui {
         }
     }
 
-    public void displayListMenu() {
-        System.out.println("");
+    private void displayListMenu() {
+        System.out.println();
         System.out.printf("%s %-14s %-14s %-13s %-14s\n","No", "Nama", "Harga", "Kategori", "Jenis");
         this.managementMenu.menu.tampilkanMenuNonDiskon();
     }
 
-    public void displayListPesanan() {
+    private void displayListPesanan() {
         this.order.printListOrder();
     }
 
-    public void formCreatePesanan() {
+    private void formCreatePesanan() {
         displayListMenu();
 
         System.out.print("Masukkan nama menu: ");
@@ -105,7 +99,7 @@ public class UiPesanan implements Ui {
 
     }
 
-    public void formEditPesanan() {
+    private void formEditPesanan() {
         if(order.getDaftarPesanan().isEmpty()) {
             System.out.println("-- Tidak ada pesanan yang dapat diedit");
             return;
@@ -133,7 +127,7 @@ public class UiPesanan implements Ui {
         System.out.println("-- Pesanan berhasil diedit");
     }
 
-    public void formRemovePesanan() {
+    private void formRemovePesanan() {
         if (order.getDaftarPesanan().size() == 0) {
             System.out.println("-- Tidak ada pesanan yang dapat dihapus");
             return;
@@ -150,7 +144,7 @@ public class UiPesanan implements Ui {
         order.deleteOrderItem(nomorPesanan - 1);
     }
 
-    public void formTerapkanDiskon() {
+    private void formTerapkanDiskon() {
         if(order.getDaftarPesanan().size() == 0) {
             System.out.println("-- Belum ada pesanan, belum dapat diberi diskon");
             return;
@@ -176,7 +170,7 @@ public class UiPesanan implements Ui {
         System.out.println("Diskon berhasil diterapkan");
     }
 
-    public void formHapusDiskon() {
+    private void formHapusDiskon() {
         if (order.getDiskon() == null) {
             System.out.println("-- Tidak ada diskon yang dapat dihapus");
             return;
@@ -185,13 +179,13 @@ public class UiPesanan implements Ui {
         System.out.println("-- Diskon berhasil dihapus");
     }
     
-    public void formFinishPesanan() {
+    private void formFinishPesanan() {
         System.out.println("Pesanan telah selesai");
         order.printStruk();
         order.deleteAllOrderItem();
     }
 
-    public void tampilkanStrukTerakhir() {
+    private void tampilkanStrukTerakhir() {
         System.out.println("\n\n");
         order.muatStrukDariFile();
 

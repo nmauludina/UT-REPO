@@ -30,7 +30,7 @@ public class Order {
         daftarPesanan.clear();
     }
 
-    public double calculateSubtotalOrders() {
+    private double calculateSubtotalOrders() {
         double subtotal = 0;
         for (OrderItem item : daftarPesanan) {
             subtotal += item.getOrderPrice();
@@ -38,15 +38,15 @@ public class Order {
         return subtotal;
     }
 
-    public double calculateTotalDiskon() {
+    private double calculateTotalDiskon() {
         return calculateSubtotalOrders() * (diskon != null ? diskon.diskon / 100 : 0);
     }
 
-    public double calculateTotalPajak() {
+    private double calculateTotalPajak() {
         return PAJAK * calculateSubtotalOrders();
     }
 
-    public double calculateTotalOrders() {
+    private double calculateTotalOrders() {
         double subtotal = calculateSubtotalOrders();
         double totalDiskon = calculateTotalDiskon();
         return subtotal - totalDiskon + calculateTotalPajak() + BIAYA_PELAYANAN;
@@ -129,7 +129,7 @@ public class Order {
         daftarPesanan.set(i, orderItem);
     }
 
-    public void simpanStrukKeFile() {
+    private void simpanStrukKeFile() {
         try (FileWriter writer = new FileWriter(NAMA_FILE_STRUK)) {
             writer.write("STRUK PEMBAYARAN\n");
             writer.write("------------------------------------------------------------\n");

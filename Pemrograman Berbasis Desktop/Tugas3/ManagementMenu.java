@@ -53,7 +53,7 @@ public class ManagementMenu implements Ui {
         }
     }
 
-    public void uiDisplayDaftarMenu() {
+    private void uiDisplayDaftarMenu() {
         if (!menu.daftarMenu.isEmpty()) {
             System.out.println("\n\nDaftar Menu");
             System.out.println("----------------------------------");
@@ -64,14 +64,14 @@ public class ManagementMenu implements Ui {
         System.out.println("[!] Menu kosong!");
     }
 
-    public void uiDisplayDaftarDiskon() {
+    protected void uiDisplayDaftarDiskon() {
         System.out.println("\n\nDaftar Diskon:");
         System.out.printf("%s %-14s %-14s %-13s %-14s\n", "No", "Nama", "Harga", "Kategori", "Jenis");
         menu.tampilkanDiskon();
         return;
     }
 
-    protected void uiAddMenuItem() {
+    private void uiAddMenuItem() {
         System.out.println("Masukkan informasi menu.");
 
         boolean isRunning = true;
@@ -134,7 +134,7 @@ public class ManagementMenu implements Ui {
         }
     }
 
-    protected void uiEditMenuItem() {
+    private void uiEditMenuItem() {
         System.out.println("\n\nMANAJEMEN MENU > HAPUS ITEM MENU");
         System.out.println("----------------------------------");
         System.out.println("Daftar Menu:");
@@ -212,7 +212,7 @@ public class ManagementMenu implements Ui {
         }
     }
 
-    protected void uiDeleteMenuItem() {
+    private void uiDeleteMenuItem() {
         System.out.println("\n\nMANAJEMEN MENU > HAPUS ITEM MENU");
         System.out.println("----------------------------------");
         System.out.println("Daftar Menu:");
@@ -249,27 +249,4 @@ public class ManagementMenu implements Ui {
             }
         }
     }
-
-    // public String validasiMasukanPengguna(int batasMaksimum) {
-    // try {
-    // String masukan = scanner.nextLine();
-    // if (Integer.parseInt(masukan) < 0 || Integer.parseInt(masukan) >=
-    // batasMaksimum) {
-    // System.out.println("Pilihan tidak tersedia. Masukkan nomor menu yang
-    // valid.");
-    // } else {
-    // return masukan;
-    // }
-    // } catch (NumberFormatException e) {
-    // // Menangani jika input bukan angka
-    // System.out.println("-- Input tidak valid. Harap masukkan angka.");
-    // } catch (IndexOutOfBoundsException e) {
-    // // Menangani kesalahan indeks jika tidak sengaja terjadi
-    // System.out.println("-- Pilihan tidak valid. Pilihan tidak ditemukan.");
-    // } catch (Exception e) {
-    // // Menangani kesalahan umum lainnya
-    // System.out.println("-- Terjadi kesalahan: " + e.getMessage());
-    // }
-    // return "";
-    // }
 }

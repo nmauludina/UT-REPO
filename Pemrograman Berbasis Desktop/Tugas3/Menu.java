@@ -9,26 +9,26 @@ public class Menu {
     static final String NAMA_FILE = "daftar_menu.txt";
     public ArrayList<MenuItem> daftarMenu = new ArrayList<>();
 
-    public void tambahMenu(MenuItem menuItem) {
+    protected void tambahMenu(MenuItem menuItem) {
         daftarMenu.add(menuItem);
         simpanKeFile();
     }
 
-    public void ubahMenu(int index, MenuItem newMenu) {
+    protected void ubahMenu(int index, MenuItem newMenu) {
         if (index >= 0 && index < daftarMenu.size()) {
             daftarMenu.set(index, newMenu);
         }
         simpanKeFile();
     }
 
-    public void hapusMenu(int index) {
+    protected void hapusMenu(int index) {
         if (index >= 0 && index < daftarMenu.size()) {
             daftarMenu.remove(index);
         }
         simpanKeFile();
     }
 
-    public void tampilkanMenu() {
+    protected void tampilkanMenu() {
         int index = 1;
         for (MenuItem menuItem : daftarMenu) {
             System.out.printf("%-2d ", index);
@@ -37,7 +37,7 @@ public class Menu {
         }
     }
 
-    public void tampilkanMenuNonDiskon() {
+    protected void tampilkanMenuNonDiskon() {
         int index = 1;
         for (MenuItem menuItem : daftarMenuNonDiskon()) {
             if (!(menuItem instanceof Diskon)) {
@@ -49,7 +49,7 @@ public class Menu {
     }
 
     // Ambil menu non diskon saja (makanan, minuman)
-    public ArrayList<MenuItem> daftarMenuNonDiskon() {
+    protected ArrayList<MenuItem> daftarMenuNonDiskon() {
         ArrayList<MenuItem> menu = new ArrayList<MenuItem>();
         for (MenuItem menuItem : daftarMenu) {
             if (!(menuItem instanceof Diskon)) {
@@ -60,7 +60,7 @@ public class Menu {
     }
 
     // Print list diskon saja
-    public void tampilkanDiskon() {
+    protected void tampilkanDiskon() {
         int index = 1;
         ArrayList<Diskon> diskonList = daftarDiskon();
         if (diskonList.size() == 0) {
@@ -75,7 +75,7 @@ public class Menu {
         }
     }
 
-    public ArrayList<Diskon> daftarDiskon() {
+    protected ArrayList<Diskon> daftarDiskon() {
         ArrayList<Diskon> diskonList = new ArrayList<>();
         for (MenuItem menuItem : daftarMenu) {
             if (menuItem instanceof Diskon) {
@@ -85,7 +85,7 @@ public class Menu {
         return diskonList;
     }
 
-    public MenuItem cariMenu(String namaMenu) {
+    protected MenuItem cariMenu(String namaMenu) {
         for (MenuItem menuItem : daftarMenu) {
             if (menuItem.nama.equalsIgnoreCase(namaMenu)) {
                 return menuItem;
@@ -94,7 +94,7 @@ public class Menu {
         return null;
     }
 
-    public void simpanKeFile() {
+    private void simpanKeFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(NAMA_FILE))) {
             for (MenuItem item : daftarMenu) {
                 if (item instanceof Makanan) {
@@ -116,7 +116,7 @@ public class Menu {
         }
     }
 
-    public void muatDariFile() {
+    protected void muatDariFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(NAMA_FILE))) {
             String baris;
             while ((baris = reader.readLine()) != null) {

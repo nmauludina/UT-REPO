@@ -1,14 +1,13 @@
 STRUK PEMBAYARAN
 ------------------------------------------------------------
 Nama           Jumlah         Harga         Total         
-mie ayam bakso x4             Rp15.000,00   Rp60.000,00   
-Jus Alpukat    x4             Rp17.000,00   Rp68.000,00   
+Mie ayam       x4             Rp18.000,00   Rp72.000,00   
 ------------------------------------------------------------
-Subtotal: Rp128.000,00
-Diskon: Rp12.800,00
-Pajak: Rp12.800,00
+Subtotal: Rp72.000,00
+Diskon: Rp3.600,00
+Pajak: Rp7.200,00
 Biaya Layanan: Rp20.000,00
 ------------------------------------------------------------
-TOTAL: Rp148.000,00
+TOTAL: Rp95.600,00
 
 Terima kasih telah berkunjung!
